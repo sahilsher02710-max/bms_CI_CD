@@ -6,10 +6,11 @@ on:
 
 jobs: 
     redeploy_everthing:
+        runs-on: ubuntu-latest
         name: Deploying everything to the staging cluster
         steps:
-           - name: SSH Into server
-           - run: |
+            name: SSH Into server
+            run: |
                 echo {{secrets.SSH_PRIVATE_KEY}} $> ~/ssh_key
                 ssh -i ~/ssh_key ubuntu@3.25.91.81 
                 cd bms_CI_CD && git pull 
@@ -19,3 +20,4 @@ jobs:
                 pm2 restart  web  
                 pm2 restart  ws-server   
     
+
