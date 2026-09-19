@@ -1,7 +1,7 @@
 name: Deploy to staging
 on: 
     push:
-        branches:[main]
+        branches: [main]
             
 
 jobs: 
@@ -9,9 +9,9 @@ jobs:
         runs-on: ubuntu-latest
         name: Deploying everything to the staging cluster
         steps:
-            name: SSH Into server
+          - name: SSH Into server
             run: |
-                echo {{secrets.SSH_PRIVATE_KEY}} $> ~/ssh_key
+                echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/ssh_key
                 ssh -i ~/ssh_key ubuntu@3.25.91.81 
                 cd bms_CI_CD && git pull 
                 pnpm install 
