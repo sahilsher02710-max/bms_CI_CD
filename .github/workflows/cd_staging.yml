@@ -5,7 +5,6 @@ on:
     branches:
       - main
 
-      
 jobs:
   redeploy_everything:
     runs-on: ubuntu-latest
@@ -31,6 +30,18 @@ jobs:
             ubuntu@3.26.188.96 << 'EOF'
 
           set -e
+
+          # Load NVM
+          export NVM_DIR="$HOME/.nvm"
+          [ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"
+
+          # Use the installed Node version
+          nvm use 24.13.0
+
+          echo "Node: $(node --version)"
+          echo "npm:  $(npm --version)"
+          echo "pnpm: $(pnpm --version)"
+          echo "pm2:  $(pm2 --version)"
 
           cd ~/bms_CI_CD
 
