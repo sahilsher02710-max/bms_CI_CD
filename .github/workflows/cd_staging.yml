@@ -14,7 +14,7 @@ jobs:
       - name: SSH Into server and deploy
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          SERVER_IP: ${{ secrets.SERVER_IP }}
+
         run: |
           set -e
 
@@ -27,7 +27,7 @@ jobs:
             -o ConnectTimeout=30 \
             -o ServerAliveInterval=30 \
             -o ServerAliveCountMax=3 \
-            ubuntu@"$SERVER_IP" << 'EOF'
+            ubuntu@3.26.188.96 << 'EOF'
 
           set -e
 
