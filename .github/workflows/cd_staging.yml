@@ -9,7 +9,7 @@
             runs-on: ubuntu-latest
             name: Deploying everything to the staging cluster
             steps:
-            - name: SSH Into server
+              - name: SSH Into server
                 run: |
                     echo "${{ secrets.SSH_PRIVATE_KEY }}" &> ~/ssh_key
                     echo "yes" | ssh -i ~/ssh_key ubuntu@3.25.91.81 
