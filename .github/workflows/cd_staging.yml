@@ -2,7 +2,8 @@ name: Deploy to staging
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
   redeploy_everything:
@@ -11,16 +12,41 @@ jobs:
 
     steps:
       - name: SSH Into server and deploy
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SERVER_IP: ${{ secrets.SERVER_IP }}
         run: |
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/ssh_key
+          set -e
+
+          echo "$SSH_PRIVATE_KEY" > ~/ssh_key
           chmod 600 ~/ssh_key
 
-          ssh -o StrictHostKeyChecking=no -i ~/ssh_key ubuntu@3.26.188.96 << 'EOF'
-            cd ~/bms_CI_CD
-            git pull origin main
-            pnpm install
-            pnpm run build
-            pm2 restart http-server
-            pm2 restart web
-            pm2 restart ws-server
+          ssh \
+            -i ~/ssh_key \
+            -o StrictHostKeyChecking=no \
+            -o ConnectTimeout=30 \
+            -o ServerAliveInterval=30 \
+            -o ServerAliveCountMax=3 \
+            ubuntu@"$SERVER_IP" << 'EOF'
+
+          set -e
+
+          cd ~/bms_CI_CD
+
+          echo "Pulling latest code..."
+          git pull origin main
+
+          echo "Installing dependencies..."
+          pnpm install
+
+          echo "Building..."
+          pnpm run build
+
+          echo "Restarting services..."
+          pm2 restart http-server
+          pm2 restart web
+          pm2 restart ws-server
+
+          echo "Deployment complete."
+
           EOF
